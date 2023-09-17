@@ -5,26 +5,23 @@ import MetersTable from "./MetersTable";
 
 const LandingPage = () => {
   const [tableData, setTableData] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-          const res = await fetch(URL, {
-            method: "GET",
-            headers: {
-              "API-KEY": APIKEY,
-              "Content-Type": "application/json",
-            },
-          })
-          const data = await res.json();
-          setTableData(data);
-      } catch (err) {
-        console.error(err);
-      }
+  const fetchData = async () => {
+    try {
+        const res = await fetch(URL, {
+          method: "GET",
+          headers: {
+            "API-KEY": APIKEY,
+            "Content-Type": "application/json",
+          },
+        })
+        const data = await res.json();
+        setTableData(data);
+    } catch (err) {
+      console.error(err);
     }
-
+  }
+  useEffect(() => {
     fetchData();
-
   }, []);
 
   return (

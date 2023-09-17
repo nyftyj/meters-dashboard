@@ -25,25 +25,21 @@ import {
 const MeterForm = ({
   formType = CREATE_METER_FORM,
   title,
-  displayName = "",
-  apiName = "",
-  active = true,
-  usedForBilling = false,
   editState,
   setShowModal,
   setTable,
 }) => {
   const [displayNameText, setDisplayNameText] = useState(
-    editState?.display_name || displayName
+    editState?.display_name || ''
   );
   const [apiNameText, setApiNameText] = useState(
-    editState?.api_name || apiName
+    editState?.api_name || ''
   );
-  const [isActive, setIsActive] = useState(editState?.active || active);
+  const [isActive, setIsActive] = useState(editState?.active || true);
   const [isUsedForBilling, setIsUsedForBilling] = useState(
-    editState?.used_for_billing || usedForBilling 
+    editState?.used_for_billing || false 
   );
-  const [selectedType, setSelectedType] = useState('');
+  const [selectedType, setSelectedType] = useState(editState?.type || '');
 
   const navigation = useNavigate();
 
@@ -60,23 +56,20 @@ const MeterForm = ({
       case UPDATE_METER_FORM: {
         const newRow = fetchMeter(UPDATE_METER_FORM, payload.data, payload.id)
         setTable((prev) => [...prev, newRow]);
+        navigation('/meters')
         setShowModal(false);
         break;
       }
       case DELETE_METER_FORM: {
-        console.log('cmon', { payload })
         fetchMeter(DELETE_METER_FORM, payload.data, payload.id)
         setShowModal(false);
         navigation('/meters')
         break;
       }
       default:
-        setShowModal(false);
         break;
     }
   };
-
-  console.log({ displayNameText, apiNameText, isActive, isUsedForBilling, selectedType });
 
   const payloadData = {
     api_name: apiNameText,
@@ -130,8 +123,7 @@ const MeterForm = ({
           <FormControlLabel
             control={
               <Checkbox
-                defaultChecked={isActive}
-                defaultValue={isActive}
+                checked={isActive}
                 value={isActive}
                 onClick={(e) => setIsActive(e.target.checked)}
               />
@@ -141,8 +133,7 @@ const MeterForm = ({
           <FormControlLabel
             control={
               <Checkbox
-                defaultChecked={!!isUsedForBilling}
-                defaultValue={isUsedForBilling}
+                checked={isUsedForBilling}
                 value={isUsedForBilling}
                 onClick={(e) => setIsUsedForBilling(e.target.checked)}
               />

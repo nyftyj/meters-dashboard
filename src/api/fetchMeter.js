@@ -7,6 +7,7 @@ import {
   apiMap,
 } from "../constants.js";
 
+// this api helper function handles creating, updating and deleting a meter
 const fetchMeter = async (type, payload, id) => {
   const endpoint =
     type === UPDATE_METER_FORM || type === DELETE_METER_FORM
