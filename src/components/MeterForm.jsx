@@ -43,21 +43,21 @@ const MeterForm = ({
 
   const navigation = useNavigate();
 
-  const handleCreateMeter = (e, payload) => {
+  const handleCreateMeter = async (e, payload) => {
     e.preventDefault();
 
     switch (payload.type) {
       case CREATE_METER_FORM: {
-        const newRow = fetchMeter(CREATE_METER_FORM, payload.data)
+        const newRow = await fetchMeter(CREATE_METER_FORM, payload.data)
         setTable((prev) => [...prev, newRow]);
         setShowModal(false);
         break;
       }
       case UPDATE_METER_FORM: {
-        const newRow = fetchMeter(UPDATE_METER_FORM, payload.data, payload.id)
+        const newRow = await fetchMeter(UPDATE_METER_FORM, payload.data, payload.id)
         setTable((prev) => [...prev, newRow]);
-        navigation('/meters')
         setShowModal(false);
+        navigation('/meters')
         break;
       }
       case DELETE_METER_FORM: {

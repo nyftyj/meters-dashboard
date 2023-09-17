@@ -34,3 +34,4 @@ pnpm serve # http://localhost:4173/
 - Invalid dynamic routing handling
 - Set up .env to not include APIKEY
 - Add A11y
+- Handle same Meter name / display_name creation scenario
