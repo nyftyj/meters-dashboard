@@ -9,7 +9,6 @@ import {
 import MetersTable from "./MetersTable";
 
 const LandingPage = () => {
-  // fetch data
   const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
@@ -34,9 +33,7 @@ const LandingPage = () => {
 
   }, []);
 
-  console.log({ tableData })
   return (
-    // <div>hi</div>
     <MetersTable data={tableData} />
   );
 };

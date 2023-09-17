@@ -11,4 +11,10 @@ export const METER_TYPE_LABELS = {
 export const CREATE_METER_FORM = 'CREATE';
 export const UPDATE_METER_FORM = 'UPDATE';
 export const DELETE_METER_FORM = 'DELETE';
+
+export const apiMap = {
+    'CREATE': 'POST',
+    'UPDATE': 'PUT',
+    'DELETE': 'DELETE'
+}
 export const USED_FOR_BILLING_LABEL = 'Use this meter in pricing plan as a product item. A product item will be automatically created under billing cloud.'

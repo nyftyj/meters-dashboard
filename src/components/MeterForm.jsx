@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import FormControl from "@mui/material/FormControl";
@@ -10,6 +10,8 @@ import TextField from "@mui/material/TextField";
 import Divider from "@mui/material/Divider";
 import FormGroup from "@mui/material/FormGroup";
 import FormHelperText from "@mui/material/FormHelperText";
+
+import fetchMeter from '../api/fetchMeter';
 
 import {
   METER_TYPE_LABELS,
@@ -26,12 +28,11 @@ const MeterForm = ({
   displayName = "",
   apiName = "",
   active = true,
-  usedForBilling,
+  usedForBilling = false,
   editState,
   setShowModal,
   setTable,
 }) => {
-  console.log({ editState, setTable });
   const [displayNameText, setDisplayNameText] = useState(
     editState?.display_name || displayName
   );
@@ -40,98 +41,53 @@ const MeterForm = ({
   );
   const [isActive, setIsActive] = useState(editState?.active || active);
   const [isUsedForBilling, setIsUsedForBilling] = useState(
-    editState?.used_for_billing || usedForBilling
+    editState?.used_for_billing || usedForBilling 
   );
-//   const navigation = useNavigation();
+
+  const navigation = useNavigate();
   // const [selectedType, setSelectedType] = useState(null);
   // const meterTypeError = [gilad, jason, antoine].filter((v) => v).length !== 2;
 
   const handleCreateMeter = (e, payload) => {
     e.preventDefault();
-    const { type, id } = payload;
-    console.log({ type, id });
-    const mockNewTable = {
-      id: "2077",
-      api_name: "some api 2077",
-      display_name: "some api display name 2077",
-      active: true,
-      used_for_billing: true,
-      type: "max",
-      updated_time: new Date().getTime().toString(),
-      created_time: (new Date().getTime() + 1).toString(),
-    };
+  
 
-    switch (type) {
-      case CREATE_METER_FORM:
-        console.log("hi creating meter");
-        // make POST request
-        // on success, update table state
-
-        // const newTable = fetchMeter(CREATE_METER_FORM, {...payload})
-        setTable((prev) => [...prev, mockNewTable]);
-        // close modal
+    switch (payload.type) {
+      case CREATE_METER_FORM: {
+        const newRow = fetchMeter(CREATE_METER_FORM, payload.data)
+        setTable((prev) => [...prev, newRow]);
         setShowModal(false);
         break;
-      case UPDATE_METER_FORM:
-        // make PUT request
-        // on success, update table state
-        // close modal
-        // setShowModal(false);
-        // navigation('/meters')
+      }
+      case UPDATE_METER_FORM: {
+        const newRow = fetchMeter(UPDATE_METER_FORM, payload.data, payload.id)
+        setTable((prev) => [...prev, newRow]);
+        setShowModal(false);
         break;
-      case DELETE_METER_FORM:
-        // make DELETE request
-        // on success, update table state
-        // close modal
-        // setShowModal(false);
-        // navigation('/meters')
+      }
+      case DELETE_METER_FORM: {
+        console.log('cmon', { payload })
+        fetchMeter(DELETE_METER_FORM, payload.data, payload.id)
+        setShowModal(false);
+        navigation('/meters')
         break;
+      }
       default:
         setShowModal(false);
         break;
     }
-    // console.log({
-    //   displayNameText,
-    //   apiNameText,
-    //   isActive,
-    //   isUsedForBilling,
-    //   type,
-    // });
-
-    // const payload = {
-    //   id: editState?.id,
-    //   api_name: apiNameText,
-    //   displayName: displayNameText,
-    //   active: isActive,
-    //   used_for_billing: isUsedForBilling,
-    //   type: selectedType
-    // }
-
-    // make POST request
-    // try {
-    //   fetch('link', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({
-    //       api_name: apiNameText,
-    //       displayName: displayNameText,
-    //       active: isActive,
-    //       used_for_billing: isUsedForBilling,
-    //       type: selectedType
-    //     })
-    //   })
-    //   .then(res => res.json())
-    //   .finally(() => {
-    //     setShowModal()
-    //   })
-    // } catch (e) {
-    //   console.error(e.message)
-    // }
   };
 
-//   console.log({ displayNameText, apiNameText, isActive, isUsedForBilling });
+  console.log({ displayNameText, apiNameText, isActive, isUsedForBilling });
+
+  const payloadData = {
+    api_name: apiNameText,
+    display_name: displayNameText,
+    active: isActive,
+    used_for_billing: isUsedForBilling,
+    type: 'max',  
+  }
+
   return (
     <Box sx={{ width: "100%", color: "black" }}>
       <Typography variant="h4" fontSize="1.5rem">
@@ -187,7 +143,7 @@ const MeterForm = ({
           <FormControlLabel
             control={
               <Checkbox
-                defaultChecked={isUsedForBilling}
+                defaultChecked={!!isUsedForBilling}
                 defaultValue={isUsedForBilling}
                 value={isUsedForBilling}
                 onClick={(e) => setIsUsedForBilling(e.target.checked)}
@@ -227,7 +183,14 @@ const MeterForm = ({
               size="large"
               variant="contained"
               sx={{ mr: 3 }}
-              onClick={(e) => handleCreateMeter(e, { type: CREATE_METER_FORM })}
+              onClick={(e) =>
+                handleCreateMeter(e, {
+                  type: CREATE_METER_FORM,
+                  data: {
+                    ...payloadData,
+                  },
+                })
+              }
             >
               Create
             </Button>
@@ -266,6 +229,9 @@ const MeterForm = ({
                 handleCreateMeter(e, {
                   type: UPDATE_METER_FORM,
                   id: editState?.id,
+                  data: {
+                    ...payloadData,
+                  },
                 })
               }
             >

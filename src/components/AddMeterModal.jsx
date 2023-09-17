@@ -18,7 +18,6 @@ const style = {
 };
 
 const AddMeterModal = ({ showModal, setShowModal, setTable }) => {
-  // create POST request handler here. on success, close modal. pass handler to MeterForm.
   return (
     <Modal
       open={showModal}

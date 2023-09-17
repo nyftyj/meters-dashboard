@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -14,12 +14,6 @@ import Typography from '@mui/material/Typography';
 
 import AddMeterModal from './AddMeterModal';
 
-import {
-    APIKEY,
-    URL,
-    UPDATE_METER_FORM,
-    DELETE_METER_FORM,
-  } from "../constants.js";
 
 const TableHeaders = ({ tableHeaders, sortOrder, orderBy, handleHeadersSort }) => {
     return (
@@ -42,7 +36,7 @@ const TableHeaders = ({ tableHeaders, sortOrder, orderBy, handleHeadersSort }) =
 }
 
 const MetersTable = ({ data }) => {
-    const [table, setTable] = useState(data || []);
+    const [table, setTable] = useState(data);
     const [sortOrder, setSortOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState(null);
     const [showModal, setShowModal] = useState(false);
@@ -56,10 +50,10 @@ const MetersTable = ({ data }) => {
       };
 
     // per requirement, fitler out id, updated_time, and created_time to not render in table data
-    const tableHeaders = Object.keys(table?.[0] ?? {}).filter(key => key !== 'updated_time' && key !== 'created_time' && key !== 'id');
+    const tableHeaders = Object.keys(data?.[0] ?? {}).filter(key => key !== 'updated_time' && key !== 'created_time' && key !== 'id');
 
     const sortedTable = useMemo(() => {
-        return table.sort((a, b) => {
+        return data?.sort((a, b) => {
             if (typeof a[orderBy] === 'string') {
                 // handle sorting strings in alphabetical order
                 if (sortOrder === 'asc') {
@@ -80,7 +74,7 @@ const MetersTable = ({ data }) => {
                 }
             }
         });
-    }, [sortOrder, orderBy, table]);
+    }, [sortOrder, orderBy, data]);
 
     const handleRowClick = (id, row) => {
         navigate(`/meters/${id}`, {
@@ -90,25 +84,7 @@ const MetersTable = ({ data }) => {
         })
     }
 
-    // useEffect(() => {
-    //     const fetchData = () => {
-    //       fetch(URL, {
-    //         method: "GET",
-    //         headers: {
-    //           "API-KEY": APIKEY,
-    //           "Accept": 'application/json',
-    //           "Content-Type": "application/json",
-    //         },
-    //       })
-    //         .then((res) => res.json())
-    //         .then((data) => {
-    //             console.log('wtf is this', data)
-    //             setTable(data)
-    //         });
-    //     };
-    //     fetchData();
-    //   }, []);
-
+    console.log({ data, table })
 
     return (
       <Box sx={{ width: "100%" }}>
@@ -151,7 +127,6 @@ const MetersTable = ({ data }) => {
                     hover
                     key={id + created_time + updated_time}
                     sx={{ cursor: "pointer" }}
-                    // to={`/meters/${id}`}
                     onClick={() => handleRowClick(id, row)}
                   >
                     <TableCell>{display_name}</TableCell>
