@@ -1,10 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  APIKEY,
-  URL,
-  UPDATE_METER_FORM,
-  DELETE_METER_FORM,
-} from "../constants.js";
+import { APIKEY, URL } from "../constants.js";
 
 import MetersTable from "./MetersTable";
 
@@ -32,7 +27,6 @@ const LandingPage = () => {
 
   }, []);
 
-  console.log({ tableData })
   return (
     <MetersTable data={tableData} />
   );

@@ -7,7 +7,6 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Typography from "@mui/material/Typography";
 import Checkbox from "@mui/material/Checkbox";
 import TextField from "@mui/material/TextField";
-import Divider from "@mui/material/Divider";
 import FormGroup from "@mui/material/FormGroup";
 import FormHelperText from "@mui/material/FormHelperText";
 import Select from '@mui/material/Select';
@@ -47,11 +46,9 @@ const MeterForm = ({
   const [selectedType, setSelectedType] = useState('');
 
   const navigation = useNavigate();
-  // const meterTypeError = [gilad, jason, antoine].filter((v) => v).length !== 2;
 
   const handleCreateMeter = (e, payload) => {
     e.preventDefault();
-  
 
     switch (payload.type) {
       case CREATE_METER_FORM: {

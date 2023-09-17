@@ -23,19 +23,14 @@ pnpm serve # http://localhost:4173/
 - MeterDetailsPage
 - AddMeterModal
 - MeterForm
+- MetersTable
+- NotFound
 
-## Nice to haves
+## Nice to have if there was more time
 - Table Pagination
 - Table Data Search by query
-- Error Page
 - Page Loading Skeleton component
 - Unit Test
-
-
-## Architectural Decisions
-
-## Questions, Decisions and Trade-offs
-
-## UX/UI Decisions
-
-## Accessibility (A11y)
+- Invalid dynamic routing handling
+- Set up .env to not include APIKEY
+- Add A11y
