@@ -14,8 +14,6 @@ const fetchMeter = async (type, payload, id) => {
       : URL;
 
   const body = type === CREATE_METER_FORM || type === UPDATE_METER_FORM ? { ...payload } : {}
-  console.log({ body })
-
 
   const response = await fetch(endpoint, {
     method: apiMap[type],
@@ -32,7 +30,6 @@ const fetchMeter = async (type, payload, id) => {
   }
 
   const data = await response.json();
-  console.log("THE RETURNED DATA", data);
   return data;
 };
 

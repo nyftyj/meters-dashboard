@@ -10,11 +10,13 @@ import TextField from "@mui/material/TextField";
 import Divider from "@mui/material/Divider";
 import FormGroup from "@mui/material/FormGroup";
 import FormHelperText from "@mui/material/FormHelperText";
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
 
 import fetchMeter from '../api/fetchMeter';
 
 import {
-  METER_TYPE_LABELS,
   USED_FOR_BILLING_LABEL,
   CREATE_METER_FORM,
   UPDATE_METER_FORM,
@@ -23,7 +25,6 @@ import {
 
 const MeterForm = ({
   formType = CREATE_METER_FORM,
-  type = ["sum", "max", "unique_count"],
   title,
   displayName = "",
   apiName = "",
@@ -43,9 +44,9 @@ const MeterForm = ({
   const [isUsedForBilling, setIsUsedForBilling] = useState(
     editState?.used_for_billing || usedForBilling 
   );
+  const [selectedType, setSelectedType] = useState('');
 
   const navigation = useNavigate();
-  // const [selectedType, setSelectedType] = useState(null);
   // const meterTypeError = [gilad, jason, antoine].filter((v) => v).length !== 2;
 
   const handleCreateMeter = (e, payload) => {
@@ -78,14 +79,14 @@ const MeterForm = ({
     }
   };
 
-  console.log({ displayNameText, apiNameText, isActive, isUsedForBilling });
+  console.log({ displayNameText, apiNameText, isActive, isUsedForBilling, selectedType });
 
   const payloadData = {
     api_name: apiNameText,
     display_name: displayNameText,
     active: isActive,
     used_for_billing: isUsedForBilling,
-    type: 'max',  
+    type: selectedType,  
   }
 
   return (
@@ -155,25 +156,22 @@ const MeterForm = ({
             {USED_FOR_BILLING_LABEL}
           </FormHelperText>
         </FormGroup>
-        <FormGroup sx={{ mb: 2, mt: 2 }}>
-          <Typography fontSize="1rem" sx={{ mb: 1 }}>
-            Meter Type
-          </Typography>
-          <Divider />
-          {type.map((typeName) => (
-            <Box key={typeName} sx={{ mb: 1 }}>
-              <FormControlLabel
-                key={typeName}
-                control={<Checkbox />}
-                label={typeName}
-              />
-              <FormHelperText sx={{ mt: 0, pl: 2 }}>
-                {METER_TYPE_LABELS[typeName]}
-              </FormHelperText>
-            </Box>
-          ))}
-          {/* <FormHelperText>{meterTypeError}</FormHelperText> */}
-        </FormGroup>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+          <FormControl fullWidth>
+            <FormGroup sx={{ mb: 2, mt: 2 }}>
+              <InputLabel sx={{ fontSize: '1rem' }}>Meter Type</InputLabel>
+              <Select
+                value={selectedType}
+                label="meter type"
+                onChange={(e) => setSelectedType(e.target.value)}
+              >
+                <MenuItem value={'sum'}>Sum</MenuItem>
+                <MenuItem value={'max'}>Max</MenuItem>
+                <MenuItem value={'unique_count'}>Unique Count</MenuItem>
+              </Select>
+            </FormGroup>
+          </FormControl>
+        </Box>
       </FormControl>
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
         {formType === CREATE_METER_FORM ? (

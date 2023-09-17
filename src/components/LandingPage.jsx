@@ -12,7 +12,6 @@ const LandingPage = () => {
   const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
-    console.log('abcded')
     const fetchData = async () => {
       try {
           const res = await fetch(URL, {
@@ -33,6 +32,7 @@ const LandingPage = () => {
 
   }, []);
 
+  console.log({ tableData })
   return (
     <MetersTable data={tableData} />
   );
