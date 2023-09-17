@@ -5,6 +5,7 @@ import MetersTable from "./MetersTable";
 
 const LandingPage = () => {
   const [tableData, setTableData] = useState([]);
+
   const fetchData = async () => {
     try {
         const res = await fetch(URL, {
@@ -20,12 +21,13 @@ const LandingPage = () => {
       console.error(err);
     }
   }
+
   useEffect(() => {
     fetchData();
   }, []);
 
   return (
-    <MetersTable data={tableData} />
+    <MetersTable data={tableData} setTableData={setTableData} />
   );
 };
 

@@ -11,7 +11,6 @@ import FormGroup from "@mui/material/FormGroup";
 import FormHelperText from "@mui/material/FormHelperText";
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
 
 import fetchMeter from '../api/fetchMeter';
 
@@ -23,11 +22,11 @@ import {
 } from "../constants";
 
 const MeterForm = ({
-  formType = CREATE_METER_FORM,
+  formType,
   title,
   editState,
   setShowModal,
-  setTable,
+  setTableData,
 }) => {
   const [displayNameText, setDisplayNameText] = useState(
     editState?.display_name || ''
@@ -35,35 +34,32 @@ const MeterForm = ({
   const [apiNameText, setApiNameText] = useState(
     editState?.api_name || ''
   );
-  const [isActive, setIsActive] = useState(editState?.active || true);
+  const [isActive, setIsActive] = useState(editState?.active || false);
   const [isUsedForBilling, setIsUsedForBilling] = useState(
     editState?.used_for_billing || false 
   );
   const [selectedType, setSelectedType] = useState(editState?.type || '');
 
-  const navigation = useNavigate();
+  const navigate = useNavigate();
 
-  const handleCreateMeter = async (e, payload) => {
+  const handleMeter = async (e, payload) => {
     e.preventDefault();
 
     switch (payload.type) {
       case CREATE_METER_FORM: {
         const newRow = await fetchMeter(CREATE_METER_FORM, payload.data)
-        setTable((prev) => [...prev, newRow]);
+        setTableData((prev) => [...prev, newRow])
         setShowModal(false);
         break;
       }
       case UPDATE_METER_FORM: {
-        const newRow = await fetchMeter(UPDATE_METER_FORM, payload.data, payload.id)
-        setTable((prev) => [...prev, newRow]);
-        setShowModal(false);
-        navigation('/meters')
+        await fetchMeter(UPDATE_METER_FORM, payload.data, payload.id)
+        navigate('/meters');
         break;
       }
       case DELETE_METER_FORM: {
-        fetchMeter(DELETE_METER_FORM, payload.data, payload.id)
-        setShowModal(false);
-        navigation('/meters')
+        await fetchMeter(DELETE_METER_FORM, payload.data, payload.id)
+        navigate('/meters');
         break;
       }
       default:
@@ -78,6 +74,9 @@ const MeterForm = ({
     used_for_billing: isUsedForBilling,
     type: selectedType,  
   }
+
+  // assuming active and used_for_billing is optional when creating a meter
+  const hasValidInputs = displayNameText && apiNameText && selectedType;
 
   return (
     <Box sx={{ width: "100%", color: "black" }}>
@@ -124,7 +123,6 @@ const MeterForm = ({
             control={
               <Checkbox
                 checked={isActive}
-                value={isActive}
                 onClick={(e) => setIsActive(e.target.checked)}
               />
             }
@@ -134,7 +132,6 @@ const MeterForm = ({
             control={
               <Checkbox
                 checked={isUsedForBilling}
-                value={isUsedForBilling}
                 onClick={(e) => setIsUsedForBilling(e.target.checked)}
               />
             }
@@ -144,13 +141,13 @@ const MeterForm = ({
             {USED_FOR_BILLING_LABEL}
           </FormHelperText>
         </FormGroup>
+        <Typography>Meter Type</Typography>
         <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
           <FormControl fullWidth>
             <FormGroup sx={{ mb: 2, mt: 2 }}>
-              <InputLabel sx={{ fontSize: '1rem' }}>Meter Type</InputLabel>
               <Select
+                label=''
                 value={selectedType}
-                label="meter type"
                 onChange={(e) => setSelectedType(e.target.value)}
               >
                 <MenuItem value={'sum'}>Sum</MenuItem>
@@ -169,8 +166,9 @@ const MeterForm = ({
               size="large"
               variant="contained"
               sx={{ mr: 3 }}
+              disabled={!hasValidInputs}
               onClick={(e) =>
-                handleCreateMeter(e, {
+                handleMeter(e, {
                   type: CREATE_METER_FORM,
                   data: {
                     ...payloadData,
@@ -198,7 +196,7 @@ const MeterForm = ({
               sx={{ mr: 3 }}
               color="warning"
               onClick={(e) =>
-                handleCreateMeter(e, {
+                handleMeter(e, {
                   type: DELETE_METER_FORM,
                   id: editState?.id,
                 })
@@ -212,7 +210,7 @@ const MeterForm = ({
               variant="contained"
               sx={{ mr: 3 }}
               onClick={(e) =>
-                handleCreateMeter(e, {
+                handleMeter(e, {
                   type: UPDATE_METER_FORM,
                   id: editState?.id,
                   data: {

@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 
 import MeterForm from "./MeterForm";
+import { CREATE_METER_FORM } from "../constants";
 
 const style = {
   position: "absolute",
@@ -17,7 +18,7 @@ const style = {
   color: "black",
 };
 
-const AddMeterModal = ({ showModal, setShowModal, setTable }) => {
+const AddMeterModal = ({ showModal, setShowModal, setTableData }) => {
   return (
     <Modal
       open={showModal}
@@ -26,7 +27,12 @@ const AddMeterModal = ({ showModal, setShowModal, setTable }) => {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <MeterForm title="Create a Meter" setShowModal={setShowModal} setTable={setTable} />
+        <MeterForm
+          title="Create a Meter"
+          formType={CREATE_METER_FORM}
+          setShowModal={setShowModal}
+          setTableData={setTableData}
+        />
       </Box>
     </Modal>
   );

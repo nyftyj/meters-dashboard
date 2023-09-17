@@ -14,7 +14,6 @@ import Typography from '@mui/material/Typography';
 
 import AddMeterModal from './AddMeterModal';
 
-
 const TableHeaders = ({ tableHeaders, sortOrder, orderBy, handleHeadersSort }) => {
     return (
         <TableHead>
@@ -35,8 +34,7 @@ const TableHeaders = ({ tableHeaders, sortOrder, orderBy, handleHeadersSort }) =
     )
 }
 
-const MetersTable = ({ data }) => {
-    const [table, setTable] = useState(data);
+const MetersTable = ({ data, setTableData }) => {
     const [sortOrder, setSortOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState(null);
     const [showModal, setShowModal] = useState(false);
@@ -129,7 +127,7 @@ const MetersTable = ({ data }) => {
                   >
                     <TableCell>{display_name}</TableCell>
                     <TableCell>{api_name}</TableCell>
-                    <TableCell>{active ? "active" : "inactive"}</TableCell>
+                    <TableCell>{active ? "true" : "false"}</TableCell>
                     <TableCell>{used_for_billing ? "true" : "false"}</TableCell>
                     <TableCell>{type}</TableCell>
                   </TableRow>
@@ -141,7 +139,7 @@ const MetersTable = ({ data }) => {
         <AddMeterModal
           showModal={showModal}
           setShowModal={setShowModal}
-          setTable={setTable}
+          setTableData={setTableData}
         />
       </Box>
     );
